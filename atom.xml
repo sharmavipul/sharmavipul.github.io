@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[My Octopress Blog]]></title>
+  <link href="http://sharmavipul.github.io/atom.xml" rel="self"/>
+  <link href="http://sharmavipul.github.io/"/>
+  <updated>2015-03-09T16:11:39+05:30</updated>
+  <id>http://sharmavipul.github.io/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[A Brief Overview of Continous Deployment]]></title>
+    <link href="http://sharmavipul.github.io/blog/2015/01/13/continous-deployment/"/>
+    <updated>2015-01-13T23:10:23+05:30</updated>
+    <id>http://sharmavipul.github.io/blog/2015/01/13/continous-deployment</id>
+    <content type="html"><![CDATA[<p>Continous deployment is a design practise in software development which
+significantly decreases the time of software delivery.It includes
+continous integration, integration testing and then automated
+deployments.It gives the developers a platform where they can push
+patches and rapidly fix bugs as compared to manual deploys.</p>
+
+<p>Let us discuss  a typical deployment pipeline with unit tests,releases,
+integration tests and then automatic deployments.</p>
+
+<h6>
+We will be using
+ Jenkins
+ Github
+ Chef
+ AWS
+ Rails App
+</h6>
+
+
+<p><img src="http://sharmavipul.github.io/images/pipeline.png" /></p>
+
+<p>The pipeline is divided into 5 steps.</p>
+
+<h4>1)Specs </h4>
+
+
+<p>We need to run unit tests everytime a developer commits some changes.
+Jenkins continously pools github for new commit and whenever a
+developer commits on the master branch, the build is triggered.
+If the specs pass it triggers the package build</p>
+
+<h4>2)Package </h4>
+
+
+<p>There are many ways of installing the code which is to deployed the
+server.We can use git clone, we can use tar files and then download and
+use them on the servers.We use rpm or deb packages to install the
+release on the server machines.
+</br>Some of the steps in this build are
+</br>
+i) Package all the necessary gems which are required for app to
+run
+</br>
+ii) Run asset precompile
+</br>
+iii) Package the code and create rpm or deb package
+</br>
+iv) Upload the package to yum or debian repo and update it
+</br>
+The advantage of packaging(tar,rpm) above using git is that we dont have
+to run bundle install and asset precompile on every server we have.
+The advantage or rpm or deb package is that we can update or downgrade
+version using simple yum and apt-get commands</p>
+
+<h4>3)Test_deploy</h4>
+
+
+<p>In this step we create a test cluster for integration specs on which the source code is installed and
+service are run to emulate the production conditions.We can either use lxc or docker and deploy our code on the container,run integration specs and shut them down or we can  use normal instance to create the cluster. We havent used containers here because the developers wanted to login to test cluster. We use chef as deployment and configuration tool.</p>
+
+<h4>4)Integration specs</h4>
+
+
+<p>We need to run integration specs if we have more than one service which
+are dependent upon each other.
+After deploying the source code on test cluster we need to get the details
+of the test cluster i.e which service is running on which ip.
+We use knife search api for this.Using this we configure the source code and
+then run integration specs.If the integration specs pass , it triggers staging deploy</p>
+
+<h4>5)Staging deploy</h4>
+
+
+<p>Being very cautious with production,our philosophy is to create staging as a exact replica of production
+and test changes on staging cluster before deployment to production.
+The services in staging are run in production mode and we are configured
+chef.In this step the new release is deployed on staging where the team
+can test the feature in prod like environment.</p>
+]]></content>
+  </entry>
+  
+</feed>
